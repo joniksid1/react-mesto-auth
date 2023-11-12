@@ -1,0 +1,8 @@
+.popup__caption {
+  margin: 0;
+  text-align: center;
+  color: #000;
+  font-size: 24px;
+  font-weight: 900;
+  white-space: pre-wrap;
+}

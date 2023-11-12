@@ -1,0 +1,25 @@
+.elements__list {
+  margin: 0;
+  padding: 0;
+  margin-top: 51px;
+  list-style-position: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  row-gap: 20px;
+  column-gap: 17px;
+  justify-content: center;
+}
+
+@media screen and (max-width: 967px) {
+  .elements__list {
+    grid-template-columns: 282px 282px;
+    margin-top: 36px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .elements__list {
+    grid-template-columns: 282px;
+    margin-top: 36px;
+  }
+}

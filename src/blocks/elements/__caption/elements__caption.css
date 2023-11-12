@@ -1,0 +1,9 @@
+.elements__caption {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  max-width: 246px;
+  margin: 0 auto;
+  padding: 22px 0 22px 0;
+  align-items: center;
+}
