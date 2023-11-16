@@ -1,5 +1,7 @@
 .header {
   box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
   margin: 45px auto 0 auto;
   padding-bottom: 41px;
   max-width: 100%;

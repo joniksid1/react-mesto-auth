@@ -1,0 +1,8 @@
+.register__link {
+  text-decoration: none;
+  transition: opacity .3s;
+}
+
+.register__link:hover {
+  opacity: .6;
+}

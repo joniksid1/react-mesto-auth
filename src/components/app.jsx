@@ -27,7 +27,7 @@ function App() {
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
   const [isToolTipOpen, setIsToolTipOpen] = useState(true);
   const [isSucsessed, setIsSucsessed] = useState(false);
-  const [isloggedIn, setIsLoggedIn] = useState(true);
+  const [isloggedIn, setIsLoggedIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState([]);
   const [selectedDeleteCard, setSelectedDeleteCard] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
@@ -248,7 +248,7 @@ function App() {
                 element={<Login
                 />} />
             </Routes>
-            <Footer />
+            {isloggedIn && <Footer />}
           </div>
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
@@ -284,12 +284,12 @@ function App() {
             onLoading={isLoading}
             onOverlayClick={handleOverlayClick}
           />
-          <InfoToolTip
+          {/* <InfoToolTip
             isSucsessed={isSucsessed}
             isOpen={isToolTipOpen}
             onClose={closeAllPopups}
             onOverlayClick={handleOverlayClick}
-          />
+          /> */}
         </CardsContext.Provider>
       </CurrentUserContext.Provider>
     </>
