@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import '../index.css';
 import Header from './header';
 import Main from './main';
@@ -15,24 +15,73 @@ import DeletePopup from './delete-popup';
 import ProtectedRoute from './protected-route';
 import Register from './register';
 import Login from './login';
+import * as authApi from '../utils/authApi';
 import { validationConfig, formValidators } from '../utils/constants';
 import { enableValidation, FormValidator } from '../utils/FormValidator';
-import InfoToolTip from './info-tool-tip';
 
 function App() {
+  const navigate = useNavigate();
   const [isEditProfilePopupOpen, setEditProfilePopup] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopup] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = useState(false);
   const [isDeletePopupOpen, setDeletePopup] = useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-  const [isToolTipOpen, setIsToolTipOpen] = useState(true);
+  const [isToolTipOpen, setIsToolTipOpen] = useState(false);
   const [isSucsessed, setIsSucsessed] = useState(false);
   const [isloggedIn, setIsLoggedIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState([]);
   const [selectedDeleteCard, setSelectedDeleteCard] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [userEmail, setUserEmail] = useState({});
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const auth = async (jwt) => {
+    return authApi.getContent(jwt)
+      .then((res) => {
+        if (res) {
+          setIsLoggedIn(true);
+          setUserEmail({
+            email: res.email
+          });
+        }
+      })
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+
+    if (jwt) {
+      auth(jwt);
+    }
+  }, [isloggedIn]);
+
+  useEffect(() => {
+    if (isloggedIn) navigate('/');
+  }, [isloggedIn]);
+
+  const onRegister = (password, email) => {
+    return authApi.register(password, email).then((res) => {
+      if (!res || res.statusCode === 400) throw new Error('Что-то пошло не так');
+      return res;
+    });
+  };
+
+  const onLogin = (password, email) => {
+    return authApi.authorize(password, email).then((res) => {
+      if (!res) throw new Error('Неправильные имя пользователя или пароль');
+      if (res.jwt) {
+        setIsLoggedIn(true);
+        localStorage.setItem('jwt', res.jwt);
+      }
+    });
+  };
+
+  const onSignOut = () => {
+    localStorage.removeItem('jwt');
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -53,6 +102,7 @@ function App() {
     setEditProfilePopup(false);
     setAddPlacePopup(false);
     setDeletePopup(false);
+    setIsToolTipOpen(false);
     setSelectedCard([]);
     setSelectedDeleteCard([]);
     resetValidationAll(formValidators);
@@ -227,7 +277,7 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <CardsContext.Provider value={cards}>
           <div className="page__container">
-            <Header />
+            <Header email={userEmail} onSignOut={onSignOut}/>
             <Routes>
               <Route path='/' element={<ProtectedRoute
                 loggedIn={isloggedIn}
@@ -243,9 +293,18 @@ function App() {
               />} />
               <Route path='/sign-up'
                 element={<Register
+                  onRegister={onRegister}
+                  onClose={closeAllPopups}
+                  isOpen={isToolTipOpen}
+                  onOverlayClick={handleOverlayClick}
                 />} />
               <Route path='/sign-in'
                 element={<Login
+                  onLogin={onLogin}
+                  onClose={closeAllPopups}
+                  isOpen={isToolTipOpen}
+                  isloggedIn={isloggedIn}
+                  onOverlayClick={handleOverlayClick}
                 />} />
             </Routes>
             {isloggedIn && <Footer />}
@@ -284,12 +343,6 @@ function App() {
             onLoading={isLoading}
             onOverlayClick={handleOverlayClick}
           />
-          {/* <InfoToolTip
-            isSucsessed={isSucsessed}
-            isOpen={isToolTipOpen}
-            onClose={closeAllPopups}
-            onOverlayClick={handleOverlayClick}
-          /> */}
         </CardsContext.Provider>
       </CurrentUserContext.Provider>
     </>

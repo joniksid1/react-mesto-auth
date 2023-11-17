@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 
-const Register = ({ isSucsessed, isOpen, onClose, onOverlayClick }) => {
+const Register = ({ onLogin }) => {
 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    onLogin(passwordValue, emailValue);
   }
 
   const handleEmailChange = (e) => {

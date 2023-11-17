@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import InfoToolTip from "./info-tool-tip";
 import { Link } from 'react-router-dom';
 
-const Register = ({ isSucsessed, isOpen, onClose, onOverlayClick }) => {
+const Register = ({ onRegister, isSucsessed, isOpen, onClose, onOverlayClick }) => {
 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    onRegister(passwordValue, emailValue);
   }
 
   const handleEmailChange = (e) => {
