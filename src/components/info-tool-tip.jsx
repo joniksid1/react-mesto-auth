@@ -2,7 +2,7 @@ import React from "react";
 import sucsess from '../images/sucsess.svg';
 import fail from '../images/fail.svg';
 
-function InfoToolTip({ isSucsessed, isOpen, onClose, onOverlayClick }) {
+function InfoToolTip({ isSucsessed, isOpen, onClose, onOverlayClick, error }) {
 
   return (
     <div className={`popup ${isOpen ? 'popup_opened' : ''}`} onClick={onOverlayClick}>
@@ -20,9 +20,7 @@ function InfoToolTip({ isSucsessed, isOpen, onClose, onOverlayClick }) {
         {!isSucsessed && (<>
           <img src={fail} alt="Красный крест" className='popup__image' />
           <p className='popup__caption'>
-            Что-то пошло не так!
-            {'\n'}
-            Попробуйте ещё раз.
+            {`${error}` || 'Что-то пошло не так! Попробуйте ещё раз.'}
           </p>
         </>)}
       </div>

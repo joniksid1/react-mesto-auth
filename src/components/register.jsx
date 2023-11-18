@@ -1,8 +1,7 @@
 import React from "react";
-import InfoToolTip from "./info-tool-tip";
 import { Link } from 'react-router-dom';
 
-const Register = ({ onRegister, isSucsessed, isOpen, onClose, onOverlayClick }) => {
+const Register = ({ onRegister }) => {
 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
@@ -65,7 +64,6 @@ const Register = ({ onRegister, isSucsessed, isOpen, onClose, onOverlayClick }) 
           </p>
         </div>
       </form>
-      <InfoToolTip isSucsessed={isSucsessed} isOpen={isOpen} onClose={onClose} onOverlayClick={onOverlayClick} />
     </div>
   );
 };

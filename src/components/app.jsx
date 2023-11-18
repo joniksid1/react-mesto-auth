@@ -13,6 +13,7 @@ import EditProfilePopup from './edit-profile-popup';
 import EditAvatarPopup from './edit-avatar-popup';
 import AddPlacePopup from './add-place-popup';
 import DeletePopup from './delete-popup';
+import InfoToolTip from "./info-tool-tip";
 import ProtectedRoute from './protected-route';
 import Register from './register';
 import Login from './login';
@@ -34,22 +35,42 @@ function App() {
   const [selectedCard, setSelectedCard] = useState([]);
   const [selectedDeleteCard, setSelectedDeleteCard] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-  const [userEmail, setUserEmail] = useState('');
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [error, setError] = useState({});
 
-  const auth = async (jwt) => {
-    return authApi.getContent(jwt)
-      .then((res) => {
-        if (res) {
-          setIsLoggedIn(true);
-          setUserEmail(res.data.email);
-          navigate('/');
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-  };
+  useEffect(() => {
+    if (isloggedIn) {
+      api.getUserInfo()
+        .then((data) => {
+          setCurrentUser(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      api.getInitialCards()
+        .then(data => {
+          setCards(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [isloggedIn]);
+
+  const auth = useCallback(async (jwt) => {
+    try {
+      const res = await authApi.getContent(jwt);
+      if (res) {
+        setIsLoggedIn(true);
+        setUserEmail(res.data.email);
+        navigate('/');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [setIsLoggedIn, setUserEmail, navigate]);
 
   useEffect(() => {
     const jwt = getToken();
@@ -57,7 +78,7 @@ function App() {
     if (jwt) {
       auth(jwt);
     }
-  }, [isloggedIn]);
+  }, [auth]);
 
   useEffect(() => {
     const initialRoute = '/';
@@ -72,7 +93,7 @@ function App() {
     }).catch((error) => {
       setIsSucsessed(false);
       setIsToolTipOpen(true);
-      alert(error);
+      setError(error);
     })
   }
 
@@ -87,9 +108,12 @@ function App() {
         } else {
           return;
         }
-      }).catch(err => alert(err))
-  };
-
+      }).catch((error) => {
+        setIsSucsessed(false);
+        setIsToolTipOpen(true);
+        setError(error);
+      })
+  }
 
   const onSignOut = () => {
     removeToken();
@@ -142,7 +166,8 @@ function App() {
           || isAddPlacePopupOpen
           || isEditAvatarPopupOpen
           || isDeletePopupOpen
-          || isImagePopupOpen)
+          || isImagePopupOpen
+          || isToolTipOpen)
         && event.key === "Escape") {
         closeAllPopups();
       }
@@ -161,6 +186,7 @@ function App() {
       isEditAvatarPopupOpen,
       isDeletePopupOpen,
       isImagePopupOpen,
+      isToolTipOpen,
       closeAllPopups
     ]
   );
@@ -269,24 +295,6 @@ function App() {
       });
   }
 
-  useEffect(() => {
-    api.getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    api.getInitialCards()
-      .then(data => {
-        setCards(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
@@ -358,6 +366,13 @@ function App() {
             onUpdateAvatar={handleUpdateAvatar}
             onLoading={isLoading}
             onOverlayClick={handleOverlayClick}
+          />
+          <InfoToolTip
+            isSucsessed={isSucsessed}
+            isOpen={isToolTipOpen}
+            onClose={closeAllPopups}
+            onOverlayClick={handleOverlayClick}
+            error={error}
           />
         </CardsContext.Provider>
       </CurrentUserContext.Provider>
