@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from "react";
 import InfoToolTip from "./info-tool-tip";
 import { Link } from 'react-router-dom';
 

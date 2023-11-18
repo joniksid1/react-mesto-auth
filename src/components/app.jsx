@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { getToken, removeToken, setToken } from '../utils/token';
 import '../index.css';
 import Header from './header';
 import Main from './main';
@@ -21,6 +22,7 @@ import { enableValidation, FormValidator } from '../utils/FormValidator';
 
 function App() {
   const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
   const [isEditProfilePopupOpen, setEditProfilePopup] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopup] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopup] = useState(false);
@@ -32,7 +34,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState([]);
   const [selectedDeleteCard, setSelectedDeleteCard] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-  const [userEmail, setUserEmail] = useState({});
+  const [userEmail, setUserEmail] = useState('');
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,15 +43,16 @@ function App() {
       .then((res) => {
         if (res) {
           setIsLoggedIn(true);
-          setUserEmail({
-            email: res.email
-          });
+          setUserEmail(res.data.email);
+          navigate('/');
         }
+      }).catch(err => {
+        console.log(err);
       })
   };
 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = getToken();
 
     if (jwt) {
       auth(jwt);
@@ -57,28 +60,40 @@ function App() {
   }, [isloggedIn]);
 
   useEffect(() => {
-    if (isloggedIn) navigate('/');
-  }, [isloggedIn]);
+    const initialRoute = '/';
+    navigateRef.current(initialRoute);
+  }, []);
 
   const onRegister = (password, email) => {
     return authApi.register(password, email).then((res) => {
-      if (!res || res.statusCode === 400) throw new Error('Что-то пошло не так');
+      setIsSucsessed(true);
+      setIsToolTipOpen(true);
       return res;
-    });
-  };
+    }).catch((error) => {
+      setIsSucsessed(false);
+      setIsToolTipOpen(true);
+      alert(error);
+    })
+  }
 
   const onLogin = (password, email) => {
-    return authApi.authorize(password, email).then((res) => {
-      if (!res) throw new Error('Неправильные имя пользователя или пароль');
-      if (res.jwt) {
-        setIsLoggedIn(true);
-        localStorage.setItem('jwt', res.jwt);
-      }
-    });
+    return authApi.authorize(password, email)
+      .then((data) => {
+        if (data.token) {
+          setToken(data.token);
+          setIsLoggedIn(true);
+          navigate('/');
+          return data;
+        } else {
+          return;
+        }
+      }).catch(err => alert(err))
   };
 
+
   const onSignOut = () => {
-    localStorage.removeItem('jwt');
+    removeToken();
+    setUserEmail('');
     setIsLoggedIn(false);
     navigate('/login');
   };
@@ -277,7 +292,7 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <CardsContext.Provider value={cards}>
           <div className="page__container">
-            <Header email={userEmail} onSignOut={onSignOut}/>
+            <Header email={userEmail} onSignOut={onSignOut} />
             <Routes>
               <Route path='/' element={<ProtectedRoute
                 loggedIn={isloggedIn}
@@ -294,6 +309,7 @@ function App() {
               <Route path='/sign-up'
                 element={<Register
                   onRegister={onRegister}
+                  isSucsessed={isSucsessed}
                   onClose={closeAllPopups}
                   isOpen={isToolTipOpen}
                   onOverlayClick={handleOverlayClick}

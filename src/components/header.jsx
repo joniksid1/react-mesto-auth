@@ -3,7 +3,6 @@ import logo from '../images/header-logo.svg';
 import { Link, Routes, Route } from 'react-router-dom';
 
 function Header({ email, onSignOut }) {
-
   return (
     <header className="header">
       <img
@@ -12,7 +11,7 @@ function Header({ email, onSignOut }) {
         className="header__logo"
       />
       <div className='header__wrapper'>
-        {/* <p className='header__email'>{email}</p> */}
+        {email && <p className='header__email'>{email}</p>}
         <Routes>
           <Route path='/sign-up' element={<Link to='/sign-in'
             className='header__link'>

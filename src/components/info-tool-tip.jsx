@@ -15,14 +15,14 @@ function InfoToolTip({ isSucsessed, isOpen, onClose, onOverlayClick }) {
         />
         {isSucsessed && (<>
           <img src={sucsess} alt="Иконка успешной регистрации" className='popup__image' />
-          <p className='popup__caption'>Вы успешно зарегистрировались!</p>
+          <p className='popup__caption'>Вы успешно{'\n'}зарегистрировались!</p>
         </>)}
         {!isSucsessed && (<>
           <img src={fail} alt="Красный крест" className='popup__image' />
           <p className='popup__caption'>
-           Что-то пошло не так!
-           {'\n'}
-           Попробуйте ещё раз.
+            Что-то пошло не так!
+            {'\n'}
+            Попробуйте ещё раз.
           </p>
         </>)}
       </div>
