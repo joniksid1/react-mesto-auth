@@ -3,3 +3,9 @@
   font-weight: 900;
   margin: 60px 0 0 0;
 }
+
+@media screen and (max-width: 640px) {
+  .register__title {
+    font-size: 20px;
+  }
+}

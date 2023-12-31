@@ -1,7 +1,15 @@
 .register__wrapper_type_input {
   margin-top: 50px;
+  min-height: 70px;
 }
 
 .register__wrapper_type_input:nth-child(2) {
   margin-top: 30px;
+}
+
+@media screen and (max-width: 640px) {
+  .register__wrapper_type_input {
+    margin-top: 40px;
+    min-height: 85px;
+  }
 }

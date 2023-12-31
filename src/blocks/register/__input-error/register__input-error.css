@@ -1,0 +1,5 @@
+.register__input-error {
+  color: rgba(255, 25, 0, .7);
+  font-size: 12px;
+  line-height: normal;
+}

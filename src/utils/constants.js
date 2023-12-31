@@ -6,7 +6,6 @@ const apiOptions = {
   },
 };
 
-
 const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -15,6 +14,14 @@ const validationConfig = {
   inputErrorFrameClass: 'popup__input_error-frame',
 };
 
+const registerValidationConfig = {
+  formSelector: '.register__form',
+  inputSelector: '.register__input',
+  submitButtonSelector: '.register__button',
+  inputErrorSelector: '.register__input-error_type_',
+  inputErrorFrameClass: 'register__input_error-frame',
+};
+
 const formValidators = {}
 
-export { apiOptions, validationConfig, formValidators };
+export { apiOptions, validationConfig, formValidators, registerValidationConfig };

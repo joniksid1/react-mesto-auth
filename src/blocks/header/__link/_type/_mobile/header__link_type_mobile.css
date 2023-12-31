@@ -1,0 +1,11 @@
+.header__link_type_mobile {
+  display: none;
+  margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .header__link_type_mobile {
+      display: block;
+      font-size: 18px;
+  }
+}

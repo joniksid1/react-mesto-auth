@@ -1,9 +1,15 @@
 import React from 'react';
+import { enableValidation } from "../utils/FormValidator";
+import { registerValidationConfig } from "../utils/constants";
 
-const Register = ({ onLogin }) => {
+const Login = ({ onLogin }) => {
 
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
+
+  React.useEffect(() => {
+    enableValidation(registerValidationConfig);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,14 +27,14 @@ const Register = ({ onLogin }) => {
   return (
     <div className='register'>
       <h1 className='register__title'>Вход</h1>
-      <form className='register__form'>
+      <form className='register__form' name='login' noValidate>
         <div className="register__wrapper register__wrapper_type_input">
           <input
             name="email"
             type="email"
             placeholder="Email"
             className="register__input register__input_type_email"
-            required=""
+            required="true"
             value={emailValue ?? ''}
             onChange={handleEmailChange}
           />
@@ -42,7 +48,8 @@ const Register = ({ onLogin }) => {
             type="password"
             placeholder="Пароль"
             className="register__input register__input_type_password"
-            required=""
+            required="true"
+            minLength={6}
             value={passwordValue ?? ''}
             onChange={handlePasswordChange}
           />
@@ -63,4 +70,4 @@ const Register = ({ onLogin }) => {
   );
 };
 
-export default Register;
+export default Login;

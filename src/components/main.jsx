@@ -42,7 +42,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onDeletePopup, onSelect
       </section>
       <section className="elements" aria-label="Карточки мест России">
         <ul className="elements__list">
-          {cards.map((card) => (
+          {cards.slice().reverse().map((card) => (
             <Card
               card={card}
               onCardClick={onCardClick}

@@ -1,0 +1,8 @@
+.register__input_error-frame {
+  border-color: rgba(255, 25, 0, .7);
+}
+
+.register__input_error-frame:focus {
+  border: 0;
+  outline-color: rgba(255, 25, 0, .7);
+}

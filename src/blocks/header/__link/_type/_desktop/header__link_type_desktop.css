@@ -1,0 +1,9 @@
+.header__link_type_desktop {
+  display: block;
+}
+
+@media screen and (max-width: 640px) {
+  .header__link_type_desktop {
+      display: none;
+  }
+}
